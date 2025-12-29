@@ -10,6 +10,7 @@ my_venv/
 
 __pychache__/
 .venv/
+venv/
 env/
 ENV/
 env.bak/

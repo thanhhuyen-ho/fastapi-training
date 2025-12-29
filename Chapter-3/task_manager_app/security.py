@@ -25,6 +25,7 @@ def get_user(db, username: str):
 def fake_token_generator(user: UserInDB) -> str:
     # This doesn't provide any security at all
     return f"tokenized{user.username}"
+
 def fake_token_resolver(
     token: str
 ) -> UserInDB | None:
@@ -47,4 +48,5 @@ def get_user_from_token(
             ),
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
     return user
