@@ -10,7 +10,8 @@ def read_all_tasks() -> list[TaskWithID]:
     with open(DATABASE_FILENAME) as csvfile:
         reader = csv.DictReader(csvfile)
         return [
-            TaskWithID(**row) for row in reader]
+            TaskWithID(**row) for row in reader
+        ]
         
 def read_task(task_id: int) -> Optional[TaskWithID]:
     with open(DATABASE_FILENAME) as csvfile:

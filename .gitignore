@@ -18,6 +18,9 @@ venv.bak/
 *.py[cod]
 *$py.class
 *.pem
+*.db
+
+.log
 
 .DS_Store
 Thumbs.db

@@ -8,19 +8,6 @@ from protoapp.database import Base
 from protoapp.main import app, get_db_session
 
 
-@pytest.fixture(scope="function")
-def db_session_test():
-    # Setup code for database session (e.g., create tables, connect to test DB)
-    yield
-    # Teardown code for database session (e.g., drop tables, disconnect from test DB)
-@pytest.fixture(scope="function")
-def test_client(db_session_test):
-    client = TestClient(app)
-    
-    app.dependency_overrides[get_db_session] = (lambda: db_session_test)
-    
-    return client 
-    
 engine = create_engine(
     "sqlite:///:memory:",
     connect_args={"check_same_thread": False},
@@ -40,3 +27,13 @@ def test_db_session():
         yield db
     finally:
         db.close()
+
+@pytest.fixture
+def test_client(test_db_session):
+    client = TestClient(app)
+    
+    app.dependency_overrides[get_db_session] = (lambda: test_db_session)
+    
+    return client 
+    
+
