@@ -28,6 +28,9 @@ class Ticket(Base):
     event: Mapped["Event | None"] = relationship(
         back_populates="tickets"
     )
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
+    owner: Mapped["User | None"] = relationship(back_populates="tickets")
+
 
 
 class TicketDetails(Base):
@@ -89,4 +92,16 @@ class CreditCard(Base):
     expiration_date: Mapped[str]
     cvv: Mapped[str]
     card_holder_name: Mapped[str]
+    
+class User(Base):
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(unique=True)
+    credit_card_id: Mapped[int | None] = mapped_column(
+        ForeignKey("credit_cards.id")
+    )
+    credit_card: Mapped["CreditCard | None"] = relationship()
+    tickets: Mapped[list["Ticket"]] = relationship(
+        back_populates="owner"
+    )
 

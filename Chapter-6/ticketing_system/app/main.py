@@ -2,8 +2,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException
 
 from app.database import Base
-from app.db_connection import AsyncSessionLocal, get_db_session, get_engine
-from app.operations import create_event, create_ticket, get_ticket, delete_ticket, update_ticket_price, add_sponsor_to_event, get_events_with_sponsors
+from app.db_connection import get_db_session, get_engine
+from app.operations import (
+    create_event, 
+    create_ticket, 
+    get_ticket, 
+    delete_ticket, 
+    update_ticket_price, 
+    add_sponsor_to_event, 
+    sell_ticket_to_user
+)
 
 from typing import Annotated
 
@@ -139,5 +147,22 @@ async def register_sponsor_amount_contribution(
         amount
     )
     return {"detail": "Sponsorship registered"}
+
+@app.put("ticket/{ticket_id}/user/{user_id}")
+async def sell_ticket_to_user_route(
+    db_session: Annotated[
+        AsyncSession, Depends(get_db_session)
+    ],
+    ticket_id: int,
+    user_id: str,
+):
+    updated = await sell_ticket_to_user(
+        db_session, ticket_id, user_id
+    ) 
+    if not updated:
+        raise HTTPException(
+            status_code=404, detail="Ticket not found"
+        )
+    return {"detail": "User assigned to ticket"}
 
     

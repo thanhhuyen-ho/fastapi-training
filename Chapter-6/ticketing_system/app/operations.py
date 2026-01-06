@@ -1,4 +1,4 @@
-from sqlalchemy import select, text, update, delete
+from sqlalchemy import select, text, update, delete, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, load_only
 
@@ -201,5 +201,25 @@ async def get_events_tickets_with_user_price(
         tickets = result.scalars().all()
     return tickets
     
-    
+
+async def sell_ticket_to_user(
+    db_session: AsyncSession, ticket_id: int, user: str
+) -> bool:
+    ticket_query = (
+        update(Ticket)
+    .where(
+        and_(
+            Ticket.id == ticket_id,
+            Ticket.sold == False,
+) )
+    .values(user=user, sold=True)
+)
+    async with db_session as session:
+        result = (
+        await db_session.execute(ticket_query)
+        )
+        await db_session.commit()
+        if result.rowcount == 0:
+            return False
+    return True
     

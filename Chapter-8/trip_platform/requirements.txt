@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+
+pytest
+httpx
+
+babel
+pyinstrument
+slowapi
